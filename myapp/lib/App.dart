@@ -20,8 +20,8 @@ class App extends StatelessWidget {
           final myController = TextEditingController();
           final connected = connectivity != ConnectivityResult.none;
           if (connected) {
-            SynchronizedStudents.isOfflineData().then((isOffline) => {
-                  if (isOffline)
+            SynchronizedStudents.studentsOffline().then((students) => {
+                  if (students.isNotEmpty)
                     {
                       showDialog(
                         context: context,
@@ -32,8 +32,11 @@ class App extends StatelessWidget {
                             TextButton(
                               child: Text('Send'),
                               onPressed: () {
-                                SynchronizedStudents.synchronized();
-                                Navigator.of(context).pop();
+                                SynchronizedStudents.synchronized(students);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MyApp()));
                               },
                             ),
                           ],
