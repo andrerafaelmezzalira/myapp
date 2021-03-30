@@ -4,7 +4,11 @@ import 'dart:convert';
 class Storage {
   static read(final String key) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    return json.decode(sharedPreferences.getString(key)!);
+    var value = sharedPreferences.getString(key);
+    if (value == null) {
+      value = '[]';
+    }
+    return json.decode(value);
   }
 
   static write(final String key, final value) async {

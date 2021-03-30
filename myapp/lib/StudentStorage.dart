@@ -9,12 +9,17 @@ class StudentStorage {
   }
 
   static void addAll(final List<Student> students) async {
-    await Storage.write("students", students);
+    if (students.isNotEmpty) {
+      await Storage.write("students", students);
+    }
   }
 
   static Future<List<Student>> loadStudents() async {
     final List<Student> students = <Student>[];
-    final List<dynamic> studentsOffline = await Storage.read("students");
+    List<dynamic> studentsOffline = await Storage.read("students");
+    if (studentsOffline.isEmpty) {
+      return students;
+    }
     for (int i = 0; i < studentsOffline.length; i++) {
       students.add(
           new Student(studentsOffline[i]['name'], studentsOffline[i]['id']));

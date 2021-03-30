@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:myapp/AddStudent.dart';
 import 'package:myapp/Students.dart';
-import 'package:myapp/Http.dart';
-import 'package:myapp/StudentStorage.dart';
+import 'package:myapp/SynchronizedStudents.dart';
 import 'package:myapp/main.dart';
 
 class App extends StatelessWidget {
@@ -19,6 +19,29 @@ class App extends StatelessWidget {
         ) {
           final myController = TextEditingController();
           final connected = connectivity != ConnectivityResult.none;
+          if (connected) {
+            SynchronizedStudents.isOfflineData().then((isOffline) => {
+                  if (isOffline)
+                    {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text("Synchronized"),
+                          content: Text("Push data to server."),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text('Send'),
+                              onPressed: () {
+                                SynchronizedStudents.synchronized();
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      )
+                    }
+                });
+          }
           return Stack(
             fit: StackFit.expand,
             children: [
@@ -53,14 +76,12 @@ class App extends StatelessWidget {
                 left: 10.0,
                 top: 110.0,
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (!connected) {
-                      StudentStorage.add(myController.text);
-                    } else {
-                      Http.post(myController.text);
+                  onPressed: () async {
+                    if (myController.text.isNotEmpty) {
+                      AddStudent.add(myController.text, connected);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MyApp()));
                     }
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MyApp()));
                   },
                   child: Icon(Icons.add),
                 ),
