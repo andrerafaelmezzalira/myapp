@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/Http.dart';
 import 'package:myapp/Student.dart';
 import 'package:myapp/StudentStorage.dart';
-import 'package:myapp/SynchronizedStudents.dart';
 
 class Students extends StatelessWidget {
   final bool connected;
@@ -23,22 +22,6 @@ class Students extends StatelessWidget {
             return Text("");
           }
           return CircularProgressIndicator();
-        });
-  }
-
-  ListView listView(final students) {
-    return ListView.builder(
-        padding: EdgeInsetsDirectional.fromSTEB(10, 150, 0, 0),
-        itemCount: students.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(
-              '${students[index].name}',
-              style: (students[index].id == 0
-                  ? TextStyle(color: Colors.red, fontWeight: FontWeight.bold)
-                  : TextStyle(fontWeight: FontWeight.bold)),
-            ),
-          );
         });
   }
 
@@ -64,5 +47,21 @@ class Students extends StatelessWidget {
         .decode(response.body)
         .map<Student>((job) => new Student.fromJson(job))
         .toList();
+  }
+
+  ListView listView(final students) {
+    return ListView.builder(
+        padding: EdgeInsetsDirectional.fromSTEB(10, 150, 0, 0),
+        itemCount: students.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(
+              '${students[index].name}',
+              style: (students[index].id == 0
+                  ? TextStyle(color: Colors.red, fontWeight: FontWeight.bold)
+                  : TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          );
+        });
   }
 }
